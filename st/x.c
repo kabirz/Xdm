@@ -186,7 +186,7 @@ static void bpress(XEvent *);
 static void bmotion(XEvent *);
 static void propnotify(XEvent *);
 static void selnotify(XEvent *);
-static void selclear_(XEvent *);
+//static void selclear_(XEvent *);
 static void selrequest(XEvent *);
 static void setsel(char *, Time);
 static void mousesel(XEvent *, int);
@@ -608,11 +608,13 @@ xclipcopy(void)
 	clipcopy(NULL);
 }
 
+#if 0
 void
 selclear_(XEvent *e)
 {
 	selclear();
 }
+#endif
 
 void
 selrequest(XEvent *e)
