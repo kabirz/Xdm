@@ -18,7 +18,9 @@ endif()
 
 add_compile_options(-std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os)
 add_definitions(-D_DEFAULT_SOURCE -D_BSD_SOURCE)
+add_link_options(-s)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ######## build dwm ########
 set(DWM_VERSION "6.2")
 add_executable(dwm
