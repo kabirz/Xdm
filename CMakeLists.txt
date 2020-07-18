@@ -17,7 +17,7 @@ else()
 endif()
 
 add_compile_options(-std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os)
-add_definitions(-D_DEFAULT_SOURCE -D_BSD_SOURCE)
+add_definitions(-D_DEFAULT_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE)
 add_link_options(-s)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -26,10 +26,11 @@ set(DWM_VERSION "6.2")
 add_executable(dwm
 	dwm/drw.c
 	dwm/dwm.c
+	dwm/hardinfo.c
 	dwm/util.c
 )
 set_target_properties(dwm PROPERTIES COMPILE_DEFINITIONS VERSION=\"${DWM_VERSION}\")
-target_link_libraries(dwm ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES})
+target_link_libraries(dwm ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES} -lpthread)
 
 
 ######## build st ########

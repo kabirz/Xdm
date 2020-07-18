@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
@@ -274,6 +275,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static pthread_t pid;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -311,9 +313,9 @@ applyrules(Client *c)
 
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
-		if ((!r->title || strstr(c->name, r->title))
-		&& (!r->class || strstr(class, r->class))
-		&& (!r->instance || strstr(instance, r->instance)))
+		if ((!r->title || strcasestr(c->name, r->title))
+		&& (!r->class || strcasestr(class, r->class))
+		&& (!r->instance || strcasestr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
@@ -1307,6 +1309,7 @@ void
 quit(const Arg *arg)
 {
 	running = 0;
+	pthread_cancel(pid);
 }
 
 Monitor *
@@ -2316,6 +2319,30 @@ zoom(const Arg *arg)
 	arrange(c->mon);
 }
 
+extern int get_hard_info(char *buffer, size_t size);
+void* set_status_title(void *arg)
+{
+	char info_buf[256];
+	Display *s_dpy;
+	if (!(s_dpy = XOpenDisplay(NULL)))
+		return NULL;
+	while (1) {
+		get_hard_info(info_buf, sizeof(info_buf));
+		XStoreName(s_dpy, DefaultRootWindow(s_dpy), info_buf);
+		XSync(s_dpy, False);
+		sleep(1);
+	}
+	return NULL;
+}
+
+
+static void auto_start(void)
+{
+	system("picom -b");
+	system("feh --bg-scale ~/Pictures/wallpaper.jpg");
+	pthread_create(&pid, NULL, set_status_title, NULL);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -2329,6 +2356,7 @@ main(int argc, char *argv[])
 		die("dwm: cannot open display");
 	checkotherwm();
 	setup();
+	auto_start();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
