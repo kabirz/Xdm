@@ -16,7 +16,7 @@ else()
 	message(FATAL_ERROR "Cannot find Freetype package")
 endif()
 
-add_compile_options(-std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os)
+add_compile_options(-std=c99 -pedantic -Wall -Wno-unused-result -Wno-deprecated-declarations -Os)
 add_definitions(-D_DEFAULT_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE)
 add_link_options(-s)
 
