@@ -4,6 +4,7 @@ project(Xdm)
 
 option(ENABLE_ST "option for enable ST" OFF)
 option(ENABLE_DMENU "option for enable ST" OFF)
+set(CMAKE_INSTALL_PREFIX /usr)
 find_package(X11)
 if(X11_FOUND)
 	include_directories(${X11_INCLUDE_DIR})
@@ -39,7 +40,7 @@ add_executable(dwm
 )
 set_target_properties(dwm PROPERTIES COMPILE_DEFINITIONS VERSION=\"${DWM_VERSION}\")
 target_link_libraries(dwm ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES} -lpthread)
-
+install(TARGETS dwm RUNTIME DESTINATION bin)
 
 ######## build st ########
 if (ENABLE_ST)
@@ -50,4 +51,9 @@ add_executable(st
 set(ST_VERION "0.8.4")
 set_target_properties(st PROPERTIES COMPILE_DEFINITIONS "VERSION=\"${ST_VERSION}\";_XOPEN_SOURCE=600")
 target_link_libraries(st ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES} -lutil)
+add_custom_command(TARGET st POST_BUILD
+                   COMMAND tic -sx st.info
+		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/st
+)
+install(TARGETS st RUNTIME DESTINATION bin)
 endif()
