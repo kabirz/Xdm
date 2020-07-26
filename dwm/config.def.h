@@ -34,7 +34,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       2,            0,           -1 },
-	{ "code",     NULL,       NULL,       1,            0,           -1 },
+	{ "code",     NULL,       NULL,       4,            0,           -1 },
 };
 
 /* layout(s) */
@@ -62,10 +62,21 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+
+#ifdef DMENU
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+#else
+static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
+#endif
+
 static const char scratchpadname[] = "scratchpad";
+#ifdef ST
+static const char *termcmd[]  = { "st", NULL };
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+#else
+static const char *termcmd[]  = { "alacritty", NULL };
+static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, "-d", "90", "30", NULL };
+#endif
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(Xdm)
 
+option(ENABLE_ST "option for enable ST" OFF)
+option(ENABLE_DMENU "option for enable ST" OFF)
 find_package(X11)
 if(X11_FOUND)
 	include_directories(${X11_INCLUDE_DIR})
@@ -18,6 +20,12 @@ endif()
 
 add_compile_options(-std=c99 -pedantic -Wall -Wno-unused-result -Wno-deprecated-declarations -Os)
 add_definitions(-D_DEFAULT_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE)
+if (ENABLE_ST)
+	add_definitions(-DST)
+endif()
+if (ENABLE_DMENU)
+	add_definitions(-DDMENU)
+endif()
 add_link_options(-s)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -34,6 +42,7 @@ target_link_libraries(dwm ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES} 
 
 
 ######## build st ########
+if (ENABLE_ST)
 add_executable(st
 	st/st.c
 	st/x.c
@@ -41,3 +50,4 @@ add_executable(st
 set(ST_VERION "0.8.4")
 set_target_properties(st PROPERTIES COMPILE_DEFINITIONS "VERSION=\"${ST_VERSION}\";_XOPEN_SOURCE=600")
 target_link_libraries(st ${X11_X11_LIB} ${X11_Xft_LIB} ${Fontconfig_LIBRARIES} -lutil)
+endif()
