@@ -75,7 +75,7 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 #else
 static const char *termcmd[]  = { "alacritty", NULL };
-static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, "-d", "90", "30", NULL };
+static const char *scratchpadcmd[] = { "alacritty", "-t", scratchpadname, "-d", "90", "30", "--position", "200", "300", NULL };
 #endif
 
 static Key keys[] = {
